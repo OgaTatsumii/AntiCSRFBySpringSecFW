@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Best store</title>
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+	crossorigin="anonymous">
+</head>
+<body>
+	<div class="container">
+		<h1 class="text-center my-4">Products</h1>
+		<a th:if="${isAdmin}" class="btn btn-primary" href="/products/create">Create
+			product</a>
+
+		<table class="table">
+			<thead>
+				<th>ID</th>
+				<th>Name</th>
+				<th>Brand</th>
+				<th>Category</th>
+				<th>Price</th>
+				<th>Image</th>
+				<th:block th:if="${isAdmin}">
+					<th>Created At</th>
+					<th>Action</th>
+				</th:block>
+			</thead>
+			<tbody>
+				<tr th:each="product : ${products}">
+					<td th:text="${product.id}"></td>
+					<td th:text="${product.name}"></td>
+					<td th:text="${product.brand}"></td>
+					<td th:text="${product.category}"></td>
+					<td th:text="@{${product.price} + '$'}"></td>
+					<td><img th:src="@{'/images/' + ${product.imageFileName}}"
+						alt="..." width="100"></td>
+					<td th:if="${isAdmin}"
+						th:text="${product.createdAt.toString().substring(0,10)}"></td>
+					<td style="white-space: nowrap"><a th:if="${isAdmin}"
+						class="btn btn-primary btn-sm"
+						th:href="@{/products/edit(id=${product.id})}"> Edit</a>
+						<form th:if="${isAdmin}" th:action="@{/products/delete}"
+							method="post" style="display: inline;">
+							<input type="hidden" name="id" th:value="${product.id}">
+							<button type="submit" class="btn btn-danger btn-sm"
+								onclick="return confirm('Are you sure?')">Delete</button>
+						</form></td>
+
+				</tr>
+			</tbody>
+		</table>
+		<h3 th:if="${#lists.isEmpty(products)}" class="text-center my-5">No
+			products exist</h3>
+		<!-- <a th:if="${isAdmin}" class="btn btn-danger "
+			th:href="@{/products/deleteAll}"
+			onclick="return confirm('Are you sure to delete all products?')">DeleteAll</a> -->
+		<form th:if="${isAdmin}" th:action="@{/products/deleteAll}" method="post"
+			style="display: inline;">
+			<button type="submit" class="btn btn-danger "
+				onclick="return confirm('Are you sure to delete all products ?')">Delete All</button>
+		</form>
+	</div>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+		crossorigin="anonymous"></script>
+</body>
+</html>
